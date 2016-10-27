@@ -1,0 +1,36 @@
+---
+- name: "Check whether docker exists"
+  shell: command -v docker
+  ignore_errors: True
+  register: docker_exists
+  changed_when: false
+  always_run: true
+
+- include: install.yml
+  when: docker_exists | failed
+
+- name: "Ensure 'docker' group present"
+  group:
+    name: docker
+    state: present
+    system: true
+
+- name: "Add users into 'docker'"
+  user:
+    append: true
+    groups: docker
+    state: present
+    name: ubuntu
+  become: true
+
+- name: "Enable docker service"
+  service:
+    name: docker
+    enabled: true
+  become: true
+
+- name: "Start docker"
+  service:
+    name: docker
+    state: started
+  become: true
