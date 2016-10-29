@@ -1,0 +1,31 @@
+---
+- name: "Installing necessary packages"
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  become: true
+  with_items:
+    - golang
+    - git
+
+- name: "Defining necessary environment variables"
+  lineinfile:
+    dest: /home/ubuntu/.bashrc
+    state: present
+    line: "{{ item }}"
+  with_items:
+    - "export GOPATH=/home/ubuntu/.go/"
+    - "export PATH=$PATH:$GOPATH/bin/"
+  become: true
+  become_user: ubuntu
+
+- name: "Install rocker"
+  shell: "go get github.com/grammarly/rocker"
+  environment:
+    GOPATH: "/home/ubuntu/.go/"
+    PATH: '$PATH:/usr/bin:$GOPATH/bin/'
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: ubuntu
