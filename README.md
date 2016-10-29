@@ -39,15 +39,17 @@ To test if all the necessary packages and configuration will be installed correc
 
 - Build the AMI:
 
-    packer build packer.json
+    ```packer build packer.json```
 
 - Paste your `owner` and `keypair` at the `main.tf` file
 - Create the EC2 instance that will use the built AMI:
 
-    terraform get
-    terraform plan
-    terraform apply
+    ```terraform get```
+
+    ```terraform plan```
+
+    ```terraform apply```
 
 - SSH into the newly created instance and play with it:
 
-    ssh -i <your key pair PEM file> ubuntu@<instance public IP address>
+    ssh -i [your key pair PEM file] ubuntu@[instance public IP address]
