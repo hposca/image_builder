@@ -4,9 +4,9 @@
   ignore_errors: True
   register: docker_exists
   changed_when: false
-  always_run: true
+  check_mode: false
 
-- include: install.yml
+- import_tasks: install.yml
   when: docker_exists | failed
 
 - name: "Ensure 'docker' group present"
