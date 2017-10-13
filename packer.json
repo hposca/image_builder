@@ -37,11 +37,13 @@
       "extra_arguments": [
         "--limit localhost"
       ],
-      "role_paths": [
-        "roles/docker",
-        "roles/rocker"
+      "playbook_dir": "roles/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo pip uninstall --yes ansible"
       ]
     }
   ]
 }
-
