@@ -35,7 +35,8 @@
       "playbook_file": "playbook.yml",
       "inventory_file": "hosts",
       "extra_arguments": [
-        "--limit localhost"
+        "--limit localhost",
+        "--extra-vars ansible_become=yes"
       ],
       "playbook_dir": "roles/"
     },

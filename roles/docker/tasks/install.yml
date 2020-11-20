@@ -1,18 +1,60 @@
-- name: "Create install script temp file path"
-  set_fact:
-    docker_install_script_path: '/tmp/docker_install_script.sh'
+---
+- name: "Check whether docker exists"
+  shell: command -v docker
+  ignore_errors: True
+  register: docker_exists
+  changed_when: false
+  check_mode: false
 
-- name: "Download docker official install script"
-  get_url:
-    dest: '{{ docker_install_script_path }}'
-    force: true
-    url: https://get.docker.com
-    validate_certs: true
+- name: "Install GPG Dependency"
+  apt:
+    name: gnupg2
+    state: latest
 
-- name: "Run the script"
-  command: '/bin/sh {{ docker_install_script_path }}'
+- name: Install Python Dependency
+  apt:
+    name: python3-apt
+    state: latest
 
-- name: "Delete downloaded file"
-  file:
-    path: '{{ docker_install_script_path }}'
-    state: absent
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Update apt cache and install docker-ce
+  apt:
+    update_cache: yes
+    name: docker-ce
+    state: latest
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+- name: "Ensure 'docker' group present"
+  group:
+    name: docker
+    state: present
+    system: true
+
+- name: "Add users into 'docker'"
+  user:
+    append: true
+    groups: docker
+    state: present
+    name: ubuntu
+
+- name: "Enable docker service"
+  service:
+    name: docker
+    enabled: true
+
+- name: "Start docker"
+  service:
+    name: docker
+    state: started
